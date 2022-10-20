@@ -6,6 +6,7 @@ import Home from "../../pages/Home/Home/Home";
 import Login from "../../pages/Login/Login/Login";
 import Register from "../../pages/Login/Register/Register";
 import News from "../../pages/News/News/News";
+import PrivetRoute from "../PrivetRoute/PrivetRoute";
 
 export const routes = createBrowserRouter([
   {
@@ -28,18 +29,22 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/news/:id",
-        element: <News></News>,
+        element: (
+          <PrivetRoute>
+            <News></News>
+          </PrivetRoute>
+        ),
         loader: ({ params }) => {
           return fetch(`http://localhost:5000/news/${params.id}`);
         },
       },
       {
-        path: '/login',
-        element:<Login></Login>
+        path: "/login",
+        element: <Login></Login>,
       },
       {
-        path: '/register',
-        element:<Register></Register>
+        path: "/register",
+        element: <Register></Register>,
       },
     ],
   },
