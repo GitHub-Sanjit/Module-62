@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthProvider/AuthProvider";
 
 const Register = () => {
   const [error, setError] = useState("");
+  const [accepted, setAccepted] = useState(false);
 
-  const { createUser } = useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -15,15 +17,30 @@ const Register = () => {
     const photoUrl = form.photoUrl.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(name, photoUrl, email, password);
+    // console.log(name, photoUrl, email, password);
 
     createUser(email, password)
       .then((result) => {
         const user = result.user;
+        handleUpdateUserProfile(name, photoUrl);
         setError("");
         form.reset();
       })
       .catch((error) => setError(error.message));
+  };
+
+  const handleAccepted = (event) => {
+    setAccepted(event.target.checked);
+  };
+
+  const handleUpdateUserProfile = (name, photoUrl) => {
+    const profile = {
+      displayName: name,
+      photoURL: photoUrl,
+    };
+    updateUserProfile(profile)
+      .then(() => {})
+      .catch((e) => console.error(e));
   };
 
   return (
@@ -55,7 +72,18 @@ const Register = () => {
           required
         />
       </Form.Group>
-      <Button variant="primary" type="submit">
+      <Form.Group className="mb-3" controlId="formBasicCheckbox">
+        <Form.Check
+          type="checkbox"
+          onClick={handleAccepted}
+          label={
+            <>
+              Accept <Link to="/terms">Terms and Conditions</Link>
+            </>
+          }
+        />
+      </Form.Group>
+      <Button variant="primary" type="submit" disabled={!accepted}>
         Register
       </Button>
       <Form.Text className="text-danger">{error}</Form.Text>
