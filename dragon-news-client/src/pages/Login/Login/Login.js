@@ -7,7 +7,7 @@ import { AuthContext } from "../../../context/AuthProvider/AuthProvider";
 
 const Login = () => {
   const [error, setError] = useState("");
-  const { signIn } = useContext(AuthContext);
+  const { signIn, setLoading } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,7 +31,10 @@ const Login = () => {
           toast.error("Email is Not Verified. Please Verify First!");
         }
       })
-      .catch((error) => setError(error.message));
+      .catch((error) => setError(error.message))
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
